@@ -1,4 +1,7 @@
-﻿namespace TextRPG
+﻿using System.Reflection.Emit;
+using static TextRPG.Program;
+
+namespace TextRPG
 {
     internal class Program
     {
@@ -9,15 +12,50 @@
             public int level;
             public int atk;
             public int def;
+            public int xAtk;
+            public int xDef;
             public int maxHp;
             public int gold;
-
             public void PrintStatus()
             {
-                Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk}\n방어력 : {def}\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def} (+{xDef})\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
             }
         }
-        
+
+        public struct IronArmor
+        {
+            public string name;
+            public int addAtk;
+            public int addDef;
+            public bool isOn;
+
+            public IronArmor()
+            {
+                name = "무쇠 갑옷";
+                addAtk = 0;
+                addDef = 5;
+                isOn = false;
+            }
+        }
+
+        public struct OldSword
+        {
+            public string name;
+            public int addAtk;
+            public int addDef;
+            public bool isOn;
+
+            public OldSword()
+            {
+                name = "낡은 검";
+                addAtk = 2;
+                addDef = 0;
+                isOn = false;
+            }
+        }
+
+
+
         static void Main(string[] args)
         {
             int playerChoice = 0;
@@ -26,6 +64,8 @@
             player.job = "전사";
             player.atk = 10;
             player.def = 5;
+            player.xAtk = 0;
+            player.xDef = 0;
             player.maxHp = 100;
             player.gold = 1500;
             Console.WriteLine("당신의 이름은?");
