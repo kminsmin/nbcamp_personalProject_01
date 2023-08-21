@@ -21,7 +21,20 @@ namespace TextRPG
 
             public void PrintStatus()
             {
-                Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def} (+{xDef})\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                if (xAtk == 0 && xDef == 0)
+                {
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} \n방어력 : {def}\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                }
+                else if(xAtk != 0 && xDef == 0)
+                {
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def}\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                }
+                else if(xDef != 0 && xAtk == 0)
+                {
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} \n방어력 : {def} (+{xDef})\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                }
+                else
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def} (+{xDef})\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
             }
         }
 
