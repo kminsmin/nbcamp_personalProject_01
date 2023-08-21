@@ -5,14 +5,14 @@
         static void Main(string[] args)
         {
             int playerChoice = 0;
-            StartScene();
+            StartScene(ref playerChoice);
         }
 
-        public static void StartScene()
+        public static void StartScene(ref int playerChoice)
         {
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다. \n이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n\n1. 상태보기\n2. 인벤토리\n\n");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-            while (true)
+            while (playerChoice == 0)
             {
                 
                 playerChoice = int.Parse(Console.ReadLine());
@@ -27,6 +27,7 @@
                 else
                 {
                     Console.WriteLine("잘못된 입력입니다!");
+                    playerChoice = 0;
                 }
             }
         }
