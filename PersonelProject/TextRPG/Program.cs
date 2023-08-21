@@ -32,6 +32,7 @@ namespace TextRPG
                 addAtk = 0;
                 addDef = 5;
                 isOn = false;
+                wasOn = false;
                 description = "무쇠로 만들어져 튼튼한 갑옷입니다.";
             }
         }
@@ -43,6 +44,7 @@ namespace TextRPG
             public int addDef;
             public string description;
             public bool isOn;
+            public bool wasOn;
         }
 
         public class TestItem : Item
@@ -54,6 +56,7 @@ namespace TextRPG
                 addDef = 99;
                 description = "창조자가 이 세계를 시험하기 위해 만든 검입니다.";
                 isOn = false;
+                wasOn = false;
             }
         }
 
@@ -65,6 +68,7 @@ namespace TextRPG
                 addAtk = 2;
                 addDef = 0;
                 isOn = false;
+                wasOn = false;
                 description = "쉽게 볼 수 있는 낡은 검입니다.";
             }
         }
@@ -96,6 +100,7 @@ namespace TextRPG
 
         public static void StartScene(ref int playerChoice, ref Player player, ref List<Item> playerInv)
         {
+            LoadPlayerStat(ref player, ref playerInv);
             Console.Clear();
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다. \n이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n\n1. 상태보기\n2. 인벤토리\n\n");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
@@ -193,7 +198,7 @@ namespace TextRPG
                         }
                         if (itemChoice == 0)
                         {
-                            i = 1;
+                            i = 1;                            
                             break;
                         }
                     }
@@ -228,6 +233,37 @@ namespace TextRPG
                 else
                 {
                     Console.WriteLine($"{item.name} | 공격력 +{item.addAtk} 방어력 +{item.addDef} | {item.description}");
+                }
+            }
+        }
+
+        public static void LoadPlayerStat(ref  Player player, ref List<Item> playerInv)
+        {
+            foreach (Item item in playerInv)
+            {
+                if (item.isOn && item.wasOn == false)
+                {
+                    player.atk += item.addAtk;
+                    player.xAtk += item.addAtk;
+                    player.def += item.addDef;
+                    player.xDef += item.addDef;
+                    item.wasOn = true;
+                }
+                else if (item.isOn && item.wasOn)
+                {
+                    continue;
+                }
+                else if (item.isOn ==false && item.wasOn)
+                {
+                    player.atk -= item.addAtk;
+                    player.xAtk -= item.addAtk;
+                    player.def -= item.addDef;
+                    player.xDef -= item.addDef;
+                    item.wasOn = false;
+                }
+                else
+                {
+                    continue;
                 }
             }
         }
