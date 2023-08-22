@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using static TextRPG.Program;
 using System.Text;
+using System;
 
 namespace TextRPG
 {
@@ -189,7 +190,7 @@ namespace TextRPG
                     PrintItemInfo(item);
                 }
 
-                Console.WriteLine("\n\n2. 아이템 정렬\n1. 장착 관리\n0.나가기\n\n원하시는 행동을 입력해주세요.");
+                Console.WriteLine("\n\n1. 장착 관리\n2. 아이템 정렬\n\n\n\n0.나가기\n\n원하시는 행동을 입력해주세요.");
                 if (int.TryParse(Console.ReadLine(), out playerChoice))
                 {
                     if (playerChoice == 0)
@@ -202,7 +203,7 @@ namespace TextRPG
                     }
                     else if (playerChoice == 2)
                     {
-
+                        OrderItem(ref playerInv);
                     }
                     else
                     {
@@ -220,7 +221,7 @@ namespace TextRPG
             StartScene(ref playerChoice, ref player, ref playerInv);
         }
 
-        public static void ChangeItem(ref List<Item> playerInv)
+        public static void ChangeItem(ref List<Item> playerInv) // 착용중인 아이템을 변경합니다. 착용중인 아이템을 선택하면 착용 해제하고, 착용하지 않은 아이템을 선택하면 장착합니다. 0이 입력되면 인벤토리 초기 화면으로 돌아갑니다.
         {
             Console.Clear();
             int i = 1;
@@ -263,6 +264,64 @@ namespace TextRPG
                     Console.WriteLine("잘못된 입력입니다!");
                     Thread.Sleep(1000);
                 }
+            }
+        }
+
+        public static void OrderItem(ref List<Item> playerInv)
+        {
+            Console.Clear();
+
+            foreach (Item item in playerInv)
+            {
+                Console.Write("- ");
+                PrintItemInfo(item);
+            }
+
+            Console.WriteLine("\n\n1. 이름\n2. 이름 길이\n3. 공력력\n4. 방어력\n\n\n\n0.나가기\n\n정렬 기준을 입력해주세요.");
+
+            if (int.TryParse(Console.ReadLine(), out int orderChoice)&& orderChoice<5)
+            {
+                Console.WriteLine("\n\n1. 오름차순\n2. 내림차순\n\n정렬 기준을 입력해주세요.");
+                if (int.TryParse(Console.ReadLine(), out int isAscending)&& isAscending <3)
+                {
+                    switch (orderChoice)
+                    {
+                        case 1:
+                            if (isAscending == 1)
+                                playerInv = playerInv.OrderBy(item => item.name).ToList();
+                            else playerInv = playerInv.OrderByDescending(item => item.name).ToList();
+                            break;
+                        case 2:
+                            if (isAscending == 1)
+                                playerInv = playerInv.OrderBy(item => item.name.Length).ToList();
+                            else playerInv = playerInv.OrderByDescending(item => item.name.Length).ToList();
+                            break;
+                        case 3:
+                            if (isAscending == 1)
+                                playerInv = playerInv.OrderBy(item => item.addAtk).ToList();
+                            else playerInv = playerInv.OrderByDescending(item => item.addAtk).ToList();
+                            break;
+                        case 4:
+                            if (isAscending == 1)
+                                playerInv = playerInv.OrderBy(item => item.addDef).ToList();
+                            else playerInv = playerInv.OrderByDescending(item => item.addDef).ToList();
+                            break;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다!");
+                            Thread.Sleep(1000);
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다!");
+                    Thread.Sleep(1000);
+                }
+            }
+            else
+            {
+                Console.WriteLine("잘못된 입력입니다!");
+                Thread.Sleep(1000);
             }
         }
         public static void PrintItemInfo(Item item) // 장비의 착용여부, 증가 스탯, 상세 설명 등을 출력합니다.
