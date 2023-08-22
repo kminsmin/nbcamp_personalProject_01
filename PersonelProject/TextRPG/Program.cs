@@ -274,6 +274,7 @@ namespace TextRPG
          */
         public static void InventoryScene(ref int playerChoice, ref Player player, ref List<Item> playerInv)
         {
+            bool atStore = false;
             while (true)
             {
                 Console.Clear();
@@ -281,7 +282,7 @@ namespace TextRPG
                 foreach (Item item in playerInv)
                 {
                     Console.Write("- ");
-                    PrintItemInfo(item);
+                    PrintItemInfo(item, atStore);
                 }
 
                 Console.WriteLine("\n\n1. 장착 관리\n2. 아이템 정렬\n\n\n\n0.나가기\n\n원하시는 행동을 입력해주세요.");
@@ -325,7 +326,7 @@ namespace TextRPG
                 foreach (Item item in playerInv)
                 {
                     Console.Write("- {0} ", i);
-                    PrintItemInfo(item);
+                    PrintItemInfo(item, false);
                     i++;
                 }
                 i = 1;
@@ -368,7 +369,7 @@ namespace TextRPG
             foreach (Item item in playerInv)
             {
                 Console.Write("- ");
-                PrintItemInfo(item);
+                PrintItemInfo(item, false);
             }
 
             Console.WriteLine("\n\n1. 이름\n2. 이름 길이\n3. 공력력\n4. 방어력\n\n\n\n0.나가기\n\n정렬 기준을 입력해주세요.");
@@ -418,7 +419,7 @@ namespace TextRPG
                 Thread.Sleep(1000);
             }
         }
-        public static void PrintItemInfo(Item item) // 장비의 착용여부, 증가 스탯, 상세 설명 등을 출력합니다.
+        public static void PrintItemInfo(Item item, bool atStore) // 장비의 착용여부, 증가 스탯, 상세 설명 등을 출력합니다.
         {
             string itemName;
             int nameLength;
@@ -532,7 +533,29 @@ namespace TextRPG
                     break;
                 Console.Write($"{item.description}");
             }
-            Console.WriteLine("|");
+            Console.Write("|");
+            if (atStore)
+            {
+                data = Encoding.Default.GetBytes($"{item.price} G");
+                nameLength = data.Length;
+                blank = (30 - nameLength) / 2;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < blank; j++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == 1)
+                        break;
+                    Console.Write($"{item.price} G");
+                }
+                Console.WriteLine("|");
+            }
+            else
+            {
+                Console.WriteLine("|");
+            }
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -709,9 +732,10 @@ namespace TextRPG
             while (true)
             {
                 Console.Clear();
-                Console.ForegroundColor= ConsoleColor.Yellow;
-                Console.WriteLine($"\n\n[내 돈]\n{player.gold}");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"어서오세요! 각종 장비 판매 및 구매 가능하신 이 마을 최고의 상점입니다!\n\n[내 돈]\n{player.gold}\n\n[아이템 목록]\n");
                 Console.ForegroundColor = ConsoleColor.White;
+
                 foreach (Item item in storeItems)
                 {
                     Console.Write("- {0} ", i);
@@ -768,6 +792,80 @@ namespace TextRPG
                 }
             }
         }
+
+        public static void SellItem(ref List<Item> storeItems, ref Player player, ref List<Item> playerInv)
+        {
+            Console.Clear();
+            int i = 1;
+            while (true)
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"어서오세요! 각종 장비 판매 및 구매 가능하신 이 마을 최고의 상점입니다!\n\n[내 돈]\n{player.gold}\n\n[아이템 목록]\n");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                foreach (Item item in playerInv)
+                {
+                    Console.Write("- {0} ", i);
+                    PrintItemInfo(item, true);
+                    i++;
+                }
+                i = 1;
+                Console.WriteLine("\n\n0. 나가기\n\n판매할 장비를 선택해주세요.");
+                if (int.TryParse(Console.ReadLine(), out int itemChoice) && itemChoice < playerInv.Count + 1)
+                {
+                    for (int j = 0; j < playerInv.Count; j++)
+                    {
+                        if (itemChoice == j + 1)
+                        {
+                            if (playerInv[j].isBuy == false && playerInv[j].bound == false)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.WriteLine("이미 판매한 아이템입니다.");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Thread.Sleep(1000);
+                            }
+                            else if (playerInv[j].isBuy == false && playerInv[j].bound == true)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                                Console.WriteLine("아무리 돈이 없어도 이건 팔 수 없지.");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Thread.Sleep(1000);
+                            }
+                            else
+                            {
+                                player.gold += (playerInv[j].price/ 100) * 85;
+                                playerInv[j].isBuy = false;
+                                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                                Console.WriteLine("판매 완료했습니다.");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                if (playerInv[j].isOn == true)
+                                {
+                                    playerInv[j].isOn = false;
+                                    player.atk -= playerInv[j].addAtk;
+                                    player.xAtk -= playerInv[j].addAtk;
+                                    player.def -= playerInv[j].addDef;
+                                    player.xDef -= playerInv[j].addDef;
+                                }
+                                playerInv.Remove(playerInv[j]);
+                                Thread.Sleep(1000);
+                            }
+                        }
+                    }
+                    if (itemChoice == 0)
+                    {
+                        i = 1;
+                        break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다!");
+                    Thread.Sleep(1000);
+                }
+
+            }
+        }
         public static void StoreScene(ref int playerChoice, ref Player player, ref List<Item> playerInv)
         {
             //상점아이템 리스트 생성
@@ -788,12 +886,14 @@ namespace TextRPG
                 //아이템 목록 보여주기, 플레이어 인벤토리와 비교하여 같은 아이템이 있으면 "구매완료" 표시
                 foreach (Item item in storeItems)
                 {
+                    item.isBuy = false;
                     foreach (Item myItem in playerInv)
                     {
                         if (myItem.name == item.name)
                         {
                             item.isBuy = true;
-                        }
+                            break;
+                        }   
                     }
                     ShowStoreItem(item);
                 }
@@ -811,7 +911,7 @@ namespace TextRPG
                     }
                     else if (playerChoice == 2)
                     {
-                        //판매
+                        SellItem(ref storeItems, ref player, ref playerInv);
                     }
                     else
                     {
