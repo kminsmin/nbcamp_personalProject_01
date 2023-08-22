@@ -167,6 +167,7 @@ namespace TextRPG
 
         static void Main(string[] args)
         {
+            Console.SetWindowSize(160, 30);
             int playerChoice = 0;
             List<Item> playerInv = new List<Item>();
             playerInv.Add(new OldSword());
@@ -707,8 +708,8 @@ namespace TextRPG
                 }
                 i = 1;
 
-                Console.Write("\n\n\n0. 나가기\n\n구매할 장비를 선택해주세요.");
-                if (int.TryParse(Console.ReadLine(), out int itemChoice))
+                Console.Write($"\n\n내 돈 : {player.gold}\n\n0. 나가기\n\n구매할 장비를 선택해주세요.");
+                if (int.TryParse(Console.ReadLine(), out int itemChoice)&& itemChoice < storeItems.Count+1)
                 {
                     for (int j = 0; j < storeItems.Count; j++)
                     {
@@ -721,6 +722,10 @@ namespace TextRPG
                                     storeItems[j].isBuy = true;
                                     playerInv.Add(storeItems[j]);
                                     player.gold -= storeItems[j].price ;
+                                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                                    Console.WriteLine("구매를 완료했습니다.");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Thread.Sleep(1000);
                                 }
                                 else
                                 {
