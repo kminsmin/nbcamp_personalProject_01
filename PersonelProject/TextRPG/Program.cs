@@ -533,7 +533,7 @@ namespace TextRPG
                     break;
                 Console.Write($"{item.description}");
             }
-            Console.Write("|");
+
             if (atStore)
             {
                 data = Encoding.Default.GetBytes($"{item.price} G");
@@ -551,6 +551,7 @@ namespace TextRPG
                     Console.Write($"{item.price} G");
                 }
                 Console.WriteLine("|");
+
             }
             else
             {
