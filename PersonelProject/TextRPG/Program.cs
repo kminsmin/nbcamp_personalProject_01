@@ -179,8 +179,6 @@ namespace TextRPG
          */
         public static void InventoryScene(ref int playerChoice, ref Player player, ref List<Item> playerInv)
         {
-            int i = 1;
-
             while (true)
             {
                 Console.Clear();
@@ -191,7 +189,7 @@ namespace TextRPG
                     PrintItemInfo(item);
                 }
 
-                Console.WriteLine("\n\n1. 장착 관리\n0.나가기\n\n원하시는 행동을 입력해주세요.");
+                Console.WriteLine("\n\n2. 아이템 정렬\n1. 장착 관리\n0.나가기\n\n원하시는 행동을 입력해주세요.");
                 if (int.TryParse(Console.ReadLine(), out playerChoice))
                 {
                     if (playerChoice == 0)
@@ -200,48 +198,11 @@ namespace TextRPG
                     }
                     else if (playerChoice == 1)
                     {
-                        Console.Clear();
+                        ChangeItem(ref playerInv);
+                    }
+                    else if (playerChoice == 2)
+                    {
 
-                        while (true)
-                        {
-                            Console.Clear();
-                            foreach (Item item in playerInv)
-                            {
-                                Console.Write("- {0} ", i);
-                                PrintItemInfo(item);
-                                i++;
-                            }
-                            i = 1;
-
-                            Console.Write("\n\n\n0. 나가기\n\n장착 여부를 결정할 장비를 선택해주세요.");
-                            if (int.TryParse(Console.ReadLine(), out int itemChoice))
-                            {
-                                for (int j = 0; j < playerInv.Count; j++)
-                                {
-                                    if (itemChoice == j + 1)
-                                    {
-                                        if (playerInv[j].isOn == false)
-                                        {
-                                            playerInv[j].isOn = true;
-                                        }
-                                        else
-                                        {
-                                            playerInv[j].isOn = false;
-                                        }
-                                    }
-                                }
-                                if (itemChoice == 0)
-                                {
-                                    i = 1;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("잘못된 입력입니다!");
-                                Thread.Sleep(1000);
-                            }
-                        }
                     }
                     else
                     {
@@ -259,6 +220,51 @@ namespace TextRPG
             StartScene(ref playerChoice, ref player, ref playerInv);
         }
 
+        public static void ChangeItem(ref List<Item> playerInv)
+        {
+            Console.Clear();
+            int i = 1;
+            while (true)
+            {
+                Console.Clear();
+                foreach (Item item in playerInv)
+                {
+                    Console.Write("- {0} ", i);
+                    PrintItemInfo(item);
+                    i++;
+                }
+                i = 1;
+
+                Console.Write("\n\n\n0. 나가기\n\n장착 여부를 결정할 장비를 선택해주세요.");
+                if (int.TryParse(Console.ReadLine(), out int itemChoice))
+                {
+                    for (int j = 0; j < playerInv.Count; j++)
+                    {
+                        if (itemChoice == j + 1)
+                        {
+                            if (playerInv[j].isOn == false)
+                            {
+                                playerInv[j].isOn = true;
+                            }
+                            else
+                            {
+                                playerInv[j].isOn = false;
+                            }
+                        }
+                    }
+                    if (itemChoice == 0)
+                    {
+                        i = 1;
+                        break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다!");
+                    Thread.Sleep(1000);
+                }
+            }
+        }
         public static void PrintItemInfo(Item item) // 장비의 착용여부, 증가 스탯, 상세 설명 등을 출력합니다.
         {
             string itemName;
