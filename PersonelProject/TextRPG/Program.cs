@@ -172,7 +172,6 @@ namespace TextRPG
             List<Item> playerInv = new List<Item>();
             playerInv.Add(new OldSword());
             playerInv.Add(new TrainingArmor());
-            playerInv.Add(new TestItem());
             foreach (Item item in playerInv)
             {
                 item.isBuy = true;
@@ -228,7 +227,17 @@ namespace TextRPG
                 }
                 else
                 {
-                    Console.WriteLine("잘못된 입력입니다!");
+                    Console.Write("세계의 의지에 접근합니다...");
+                    string command = Console.ReadLine();
+                    if (command == "용사의 후예로서 청하건대, 나에게 악을 멸할 힘을 허락해 주십시오!")
+                    {
+                        playerInv.Add(new TestItem());
+                        Console.WriteLine("세계의 의지가 당신의 굳건한 마음을 바라봅니다.\n\n세계의 의지가 당신에게 힘을 하사합니다.");
+                        Console.ForegroundColor= ConsoleColor.Cyan;
+                        Console.WriteLine("[전설의 검]을 획득했습니다!");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else Console.WriteLine("잘못된 입력입니다!");
                     playerChoice = 0;
                 }
             }
@@ -700,6 +709,9 @@ namespace TextRPG
             while (true)
             {
                 Console.Clear();
+                Console.ForegroundColor= ConsoleColor.Yellow;
+                Console.WriteLine($"\n\n[내 돈]\n{player.gold}");
+                Console.ForegroundColor = ConsoleColor.White;
                 foreach (Item item in storeItems)
                 {
                     Console.Write("- {0} ", i);
@@ -707,8 +719,7 @@ namespace TextRPG
                     i++;
                 }
                 i = 1;
-
-                Console.Write($"\n\n내 돈 : {player.gold}\n\n0. 나가기\n\n구매할 장비를 선택해주세요.");
+                Console.WriteLine("\n\n0. 나가기\n\n구매할 장비를 선택해주세요.");
                 if (int.TryParse(Console.ReadLine(), out int itemChoice)&& itemChoice < storeItems.Count+1)
                 {
                     for (int j = 0; j < storeItems.Count; j++)
@@ -771,6 +782,9 @@ namespace TextRPG
             while (true)
             {
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"어서오세요! 각종 장비 판매 및 구매 가능하신 이 마을 최고의 상점입니다!\n\n[내 돈]\n{player.gold}\n\n[아이템 목록]\n");
+                Console.ForegroundColor = ConsoleColor.White;
                 //아이템 목록 보여주기, 플레이어 인벤토리와 비교하여 같은 아이템이 있으면 "구매완료" 표시
                 foreach (Item item in storeItems)
                 {
