@@ -924,7 +924,6 @@ namespace TextRPG
                     Console.WriteLine("잘못된 입력입니다!");
                     Thread.Sleep(1000);
                 }
-
             }
             StartScene(ref playerChoice, ref player, ref playerInv);
         }
