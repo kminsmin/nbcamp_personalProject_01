@@ -508,7 +508,7 @@ namespace TextRPG
                 Console.Write("|");
             }
 
-            data = Encoding.Unicode.GetBytes($"{item.description})");
+            data = Encoding.Unicode.GetBytes($"{item.description}");
             nameLength = data.Length;
             blank = (60 - nameLength) / 2;
 
@@ -520,7 +520,7 @@ namespace TextRPG
                 }
                 if (i == 1)
                     break;
-                Console.Write($"[E]{item.description}");
+                Console.Write($"{item.description}");
             }
             Console.WriteLine("|");
             Console.ForegroundColor = ConsoleColor.White;
@@ -556,6 +556,202 @@ namespace TextRPG
                 }
             }
         }
+
+        public static void ShowStoreItem(Item item)
+        {
+            string itemName;
+            int nameLength;
+            byte[] data;
+            int blank;
+            itemName = item.name;
+            data = Encoding.Unicode.GetBytes(itemName);
+            nameLength = data.Length;
+            blank = (30 - nameLength) / 2;
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < blank; j++)
+                {
+                    Console.Write(" ");
+                }
+                if (i == 1)
+                    break;
+                Console.Write($"{item.name}");
+            }
+            Console.Write("|");
+            if (item.addDef != 0 && item.addAtk == 0)
+            {
+                data = Encoding.Unicode.GetBytes($"방어력 +{item.addDef}");
+                nameLength = data.Length;
+                blank = (40 - nameLength) / 2;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < blank; j++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == 1)
+                        break;
+                    Console.Write($"방어력 +{item.addDef}");
+                }
+                Console.Write("|");
+            }
+            else if (item.addDef == 0 && item.addAtk != 0)
+            {
+                data = Encoding.Unicode.GetBytes($"공격력 +{item.addAtk}");
+                nameLength = data.Length;
+                blank = (40 - nameLength) / 2;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < blank; j++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == 1)
+                        break;
+                    Console.Write($"공격력 +{item.addAtk}");
+                }
+                Console.Write("|");
+            }
+            else
+            {
+                data = Encoding.Unicode.GetBytes($"공격력 +{item.addAtk} 방어력 +{item.addDef}");
+                nameLength = data.Length;
+                blank = (47 - nameLength) / 2;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < blank; j++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == 1)
+                        break;
+                    Console.Write($"공격력 +{item.addAtk} 방어력 +{item.addDef}");
+                }
+                Console.Write("|");
+            }
+            data = Encoding.Unicode.GetBytes($"{item.description}");
+            nameLength = data.Length;
+            blank = (60 - nameLength) / 2;
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < blank; j++)
+                {
+                    Console.Write(" ");
+                }
+                if (i == 1)
+                    break;
+                Console.Write($"{item.description}");
+            }
+            Console.Write("|");
+
+            if (item.isBuy)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                data = Encoding.Unicode.GetBytes($"구매완료");
+                nameLength = data.Length;
+                blank = (30 - nameLength) / 2;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < blank; j++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == 1)
+                        break;
+                    Console.Write($"구매완료");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("|");
+                
+            }
+            else
+            {
+                data = Encoding.Default.GetBytes($"{item.price} G");
+                nameLength = data.Length;
+                blank = (30 - nameLength) / 2;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < blank; j++)
+                    {
+                        Console.Write(" ");
+                    }
+                    if (i == 1)
+                        break;
+                    Console.Write($"{item.price} G");
+                }
+                Console.WriteLine("|");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            
+        }
+
+        public static void BuyItem(ref List<Item> storeItems, ref Player player, ref List<Item> playerInv)
+        {
+            Console.Clear();
+            int i = 1;
+            while (true)
+            {
+                Console.Clear();
+                foreach (Item item in storeItems)
+                {
+                    Console.Write("- {0} ", i);
+                    ShowStoreItem(item);
+                    i++;
+                }
+                i = 1;
+
+                Console.Write("\n\n\n0. 나가기\n\n구매할 장비를 선택해주세요.");
+                if (int.TryParse(Console.ReadLine(), out int itemChoice))
+                {
+                    for (int j = 0; j < storeItems.Count; j++)
+                    {
+                        if (itemChoice == j + 1)
+                        {
+                            if (storeItems[j].isBuy == false)
+                            {
+                                if (player.gold >= storeItems[j].price)
+                                {
+                                    storeItems[j].isBuy = true;
+                                    playerInv.Add(storeItems[j]);
+                                    player.gold -= storeItems[j].price ;
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine("돈이 부족합니다...");
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Thread.Sleep(1000);
+                                }
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.WriteLine("이미 구매한 아이템입니다.");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Thread.Sleep(1000);
+                            }
+                        }
+                    }
+                    if (itemChoice == 0)
+                    {
+                        i = 1;
+                        break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다!");
+                    Thread.Sleep(1000);
+                }
+            }
+        }
         public static void StoreScene(ref int playerChoice, ref Player player, ref List<Item> playerInv)
         {
             //상점아이템 리스트 생성
@@ -570,10 +766,17 @@ namespace TextRPG
             while (true)
             {
                 Console.Clear();
-                //아이템 목록 보여주기
+                //아이템 목록 보여주기, 플레이어 인벤토리와 비교하여 같은 아이템이 있으면 "구매완료" 표시
                 foreach (Item item in storeItems)
                 {
-                    PrintItemInfo(item);
+                    foreach (Item myItem in playerInv)
+                    {
+                        if (myItem.name == item.name)
+                        {
+                            item.isBuy = true;
+                        }
+                    }
+                    ShowStoreItem(item);
                 }
 
                 Console.WriteLine("\n\n1. 아이템 구매\n2. 아이템 판매\n\n\n\n0.나가기\n\n원하시는 행동을 입력해주세요.");
@@ -585,7 +788,7 @@ namespace TextRPG
                     }
                     else if (playerChoice == 1)
                     {
-                        //장비 착용이랑 비슷하게 숫자 띄우고 선택
+                        BuyItem(ref storeItems, ref player,ref playerInv);
                     }
                     else if (playerChoice == 2)
                     {
