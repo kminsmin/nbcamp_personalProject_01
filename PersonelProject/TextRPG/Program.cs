@@ -50,6 +50,7 @@ namespace TextRPG
             public bool wasOn;
             public bool isBuy;
             public bool bound;
+            public string part;
         }
         public class IronArmor : Item
         {
@@ -63,6 +64,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = false;
+                part = "Armor";
                 description = "무쇠로 만들어져 튼튼한 갑옷입니다.";
             }
         }
@@ -80,6 +82,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = true;
+                part = "Weapon";
             }
         }
 
@@ -95,6 +98,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = false;
+                part = "Weapon";
                 description = "쉽게 볼 수 있는 낡은 검입니다.";
             }
         }
@@ -111,6 +115,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = false;
+                part = "Armor";
                 description = "수련에 도움을 주는 갑옷입니다.";
             }
         }
@@ -127,6 +132,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = false;
+                part = "Armor";
                 description = "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.";
             }
         }
@@ -143,6 +149,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = false;
+                part = "Weapon";
                 description = "어디선가 사용됐던거 같은 도끼입니다.";
             }
         }
@@ -159,6 +166,7 @@ namespace TextRPG
                 wasOn = false;
                 isBuy = false;
                 bound = false;
+                part = "Weapon";
                 description = "스파르타의 전사들이 사용했다는 전설의 창입니다.";
             }
         }
@@ -341,6 +349,13 @@ namespace TextRPG
                             if (playerInv[j].isOn == false)
                             {
                                 playerInv[j].isOn = true;
+                                foreach (Item item in playerInv)
+                                {
+                                    if (playerInv[j].name != item.name && playerInv[j].part == item.part && item.isOn == true)
+                                    {
+                                        item.isOn = false;
+                                    }
+                                }
                             }
                             else
                             {
