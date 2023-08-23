@@ -18,6 +18,7 @@ namespace TextRPG
             public int xAtk;
             public int xDef;
             public int maxHp;
+            public int hp;
             public int gold;
 
             public void PrintStatus()
@@ -192,6 +193,7 @@ namespace TextRPG
             player.xAtk = 0;
             player.xDef = 0;
             player.maxHp = 100;
+            player.hp = 100;
             player.gold = 1500;
             Console.WriteLine("당신의 이름은?");
             player.name = Console.ReadLine();
@@ -205,7 +207,7 @@ namespace TextRPG
             LoadPlayerStat(ref player, ref playerInv);
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다. \n이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n\n1. 상태보기\n2. 인벤토리\n3. 상점\n\n");
+            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다. \n이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.\n\n1. 상태보기\n2. 인벤토리\n3. 상점\n4. 던전으로\n5. 휴식하기\n\n");
             Console.WriteLine("원하시는 행동을 입력해주세요.");
             Console.ForegroundColor = ConsoleColor.White;
             while (playerChoice == 0)
@@ -226,6 +228,24 @@ namespace TextRPG
                     {
                         StoreScene(ref playerChoice, ref player, ref playerInv);    
                         break;
+                    }
+                    else if (playerChoice == 4)
+                    {
+                        EnterDungeon(ref playerChoice, ref player, ref playerInv);
+                        break;
+                    }
+                    else if (playerChoice == 5)
+                    {
+                        if (player.gold > 500 &&player.hp < player.maxHp)
+                        {
+                            player.hp = player.maxHp;
+                            player.gold -= 500;
+                            Console.WriteLine("체력 회복 완료");
+                        }
+                        else if (player.gold > 500 && player.hp == player.maxHp) Console.WriteLine("이미 팔팔합니다.");
+                        else Console.WriteLine("돈이 없는 당신은 쉴 자격이 없습니다. 돈 벌어 오세요.");
+                        playerChoice = 0;
+                        
                     }
                     else
                     {
@@ -943,5 +963,203 @@ namespace TextRPG
             }
             StartScene(ref playerChoice, ref player, ref playerInv);
         }
+
+        public static void EnterDungeon(ref int playerChoice, ref Player player, ref List<Item> playerInv)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.WriteLine("이곳은 던전의 입구입니다. 온갖 위험이 도사리는 던전에서 꼭 살아남으시길. 건투를 빕니다.\n\n1. 동네 뒷산 [권장 공력력 : 15, 권장 방어력 : 5]\n2. 지하철 [권장 공력력 : 17, 권장 방어력 : 10]\n3. 악의 둥지[권장 공력력 : ???, 권장 방어력 : ???]\n\n0. 마을로 돌아가기\n\n");
+                Console.WriteLine("도전하실 던전을 선택해주세요.");
+                Console.ForegroundColor = ConsoleColor.White;
+                if (player.hp <= 0)
+                {
+                    player.hp = 10;
+                }
+                if (int.TryParse(Console.ReadLine(), out playerChoice))
+                {
+                    if (playerChoice == 0)
+                    {
+                        break;
+                    }
+                    if (playerChoice == 1)
+                    {
+                        Forest(ref playerChoice, ref player, ref playerInv);
+                    }
+                    else if (playerChoice == 2)
+                    {
+                        Metro(ref playerChoice, ref player, ref playerInv);
+                    }
+                    else if (playerChoice == 3)
+                    {
+                        Evil(ref playerChoice, ref player, ref playerInv);
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 입력입니다!");
+                }
+            }
+            StartScene(ref playerChoice, ref player, ref playerInv);
+        }
+
+        public static void Forest(ref int playerChoice, ref Player player, ref List<Item> playerInv)
+        {
+            int eventIndex;
+            int money = 1000;
+            int treasure = new Random().Next(500,1000);
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("동네 뒷산에 입장했습니다. 이곳은 다양한 동물들이 거주하는 곳입니다. 간혹 난폭한 동물들도 있으니 조심하세요.");
+            Console.WriteLine("탐험이 종료될 때 까지 마을로 돌아갈 수 없습니다.\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            for (int i = 0; i < 10; i++)
+            {
+                eventIndex = new Random().Next(0, 10);
+                if (eventIndex < 8)
+                {
+                    Console.WriteLine("고요한 숲 속으로 천천히 걸어갑니다...\n");
+                }
+                else
+                {
+                    Console.WriteLine("적 등장! 전투를 실행합니다!");
+                    int damage = new Random().Next(25, 35) - player.def;
+                    if (damage < 0) damage = 1;
+                    for (int  j = 0; j < new Random().Next(14-player.atk,17 - player.atk); j++)
+                    {
+                        player.hp -= damage;
+                        Console.WriteLine($"적에게 공격당했습니다! 현재 HP : [{player.hp}/{player.maxHp}]");
+                        if (player.hp < 0) break;
+                        Thread.Sleep(1000);
+                    }
+                    money += treasure;
+                    if (player.hp < 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("눈 앞이 캄캄해집니다...\n\n세계의 의지가 당신을 던전의 입구로 돌려보냅니다.\n\n");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        money = 0;
+                        break;
+                    }
+                    Console.WriteLine($"전투 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {treasure} G\n");
+                }
+                Thread.Sleep(1000);
+            }
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            if (player.hp > 0)
+                Console.WriteLine("던전 클리어! 축하합니다.\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"탐험 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {money} G");
+            player.gold += money;
+            Thread.Sleep( 2000 );
+        }
+
+        public static void Metro(ref int playerChoice, ref Player player, ref List<Item> playerInv)
+        {
+            int eventIndex;
+            int money = 2000;
+            int treasure = new Random().Next(1000, 1500);
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("지하철에 입장했습니다. 이곳은 다양한 빌런들이 존재합니다. 그들의 심기를 거스르지 않도록 조심하세요.");
+            Console.WriteLine("탐험이 종료될 때 까지 마을로 돌아갈 수 없습니다.\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            for (int i = 0; i < 15; i++)
+            {
+                eventIndex = new Random().Next(0, 10);
+                if (eventIndex < 8)
+                {
+                    Console.WriteLine(" 아무도 없는 지하철을 걷습니다... 다음 칸으로 이동합니다...\n");
+                }
+                else
+                {
+                    Console.WriteLine("적 등장! 전투를 실행합니다!");
+                    int damage = new Random().Next(25, 35) - player.def;
+                    if (damage < 0) damage = 1;
+                    for (int j = 0; j < new Random().Next(17 - player.atk, 20 - player.atk); j++)
+                    {
+                        player.hp -= damage;
+                        Console.WriteLine($"적에게 공격당했습니다! 현재 HP : [{player.hp}/{player.maxHp}]");
+                        if (player.hp < 0) break;
+                        Thread.Sleep(1000);
+                    }
+                    money += treasure;
+                    if (player.hp < 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("눈 앞이 캄캄해집니다...\n\n세계의 의지가 당신을 던전의 입구로 돌려보냅니다.\n\n");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        money = 0;
+                        break;
+                    }
+                    Console.WriteLine($"전투 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {treasure} G\n");
+                }
+                Thread.Sleep(1000);
+            }
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            if (player.hp > 0)
+                Console.WriteLine("던전 클리어! 축하합니다.\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"탐험 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {money} G");
+            player.gold += money;
+            Thread.Sleep(2000);
+        }
+
+        public static void Evil(ref int playerChoice, ref Player player, ref List<Item> playerInv)
+        {
+            int eventIndex;
+            int money = 5000;
+            int treasure = new Random().Next(5000, 10000);
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("악의 둥지에 입장했습니다. 이곳에서 살아 나간 용사는 없었습니다. 행운을 빕니다.");
+            Console.WriteLine("탐험이 종료될 때 까지 마을로 돌아갈 수 없습니다.\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            for (int i = 0; i < 25; i++)
+            {
+                eventIndex = new Random().Next(0, 10);
+                if (eventIndex < 8)
+                {
+                    Console.WriteLine(" 아무도 없는 지하철을 걷습니다... 다음 칸으로 이동합니다...\n");
+                }
+                else
+                {
+                    Console.WriteLine("적 등장! 전투를 실행합니다!");
+                    int damage = new Random().Next(100, 110) - player.def;
+                    if (damage < 0) damage = 1;
+                    for (int j = 0; j < new Random().Next(100 - player.atk, 110 - player.atk); j++)
+                    {
+                        player.hp -= damage;
+                        Console.WriteLine($"적에게 공격당했습니다! 현재 HP : [{player.hp}/{player.maxHp}]");
+                        if (player.hp < 0) break;
+                        Thread.Sleep(1000);
+                    }
+                    money += treasure;
+                    if (player.hp < 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine("눈 앞이 캄캄해집니다...\n\n세계의 의지가 당신을 던전의 입구로 돌려보냅니다.\n\n");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        money = 0;
+                        break;
+                    }
+                    Console.WriteLine($"전투 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {treasure} G\n");
+                }
+                Thread.Sleep(1000);
+            }
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            if (player.hp > 0)
+                Console.WriteLine("던전 클리어! 축하합니다.\n\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"탐험 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {money} G");
+            player.gold += money;
+            Thread.Sleep(2000);
+        }
+
     }
 }
