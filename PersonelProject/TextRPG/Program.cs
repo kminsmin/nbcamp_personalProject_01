@@ -20,23 +20,25 @@ namespace TextRPG
             public int maxHp;
             public int hp;
             public int gold;
+            public int exp;
+            public int expLimit;
 
             public void PrintStatus()
             {
                 if (xAtk == 0 && xDef == 0)
                 {
-                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} \n방어력 : {def}\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} \n방어력 : {def}\n체 력 : {hp}/{maxHp}\nGold : {gold} G\n\n");
                 }
                 else if(xAtk != 0 && xDef == 0)
                 {
-                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def}\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def}\n체 력 :  {hp}/{maxHp}\nGold : {gold} G\n\n");
                 }
                 else if(xDef != 0 && xAtk == 0)
                 {
-                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} \n방어력 : {def} (+{xDef})\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} \n방어력 : {def} (+{xDef})\n체 력 :  {hp}/{maxHp}\nGold : {gold} G\n\n");
                 }
                 else
-                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def} (+{xDef})\n체 력 : {maxHp}\nGold : {gold} G\n\n0. 나가기");
+                    Console.WriteLine($"Lv. {level.ToString("D2")}\n{name} ( {job} )\n공격력 : {atk} (+{xAtk})\n방어력 : {def} (+{xDef})\n체 력 :  {hp}/{maxHp}\nGold : {gold} G\n\n");
             }
         }
 
@@ -194,6 +196,8 @@ namespace TextRPG
             player.xDef = 0;
             player.maxHp = 100;
             player.hp = 100;
+            player.exp = 0;
+            player.expLimit = 2;
             player.gold = 1500;
             Console.WriteLine("당신의 이름은?");
             player.name = Console.ReadLine();
@@ -275,6 +279,7 @@ namespace TextRPG
         {
             Console.Clear();
             player.PrintStatus();
+            Console.WriteLine("0. 나가기");
             while (true)
             {
                 if (int.TryParse(Console.ReadLine(), out playerChoice))
@@ -1048,6 +1053,8 @@ namespace TextRPG
                         break;
                     }
                     Console.WriteLine($"전투 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {treasure} G\n");
+                    player.exp += 1;
+                    if (player.exp >= player.expLimit) LevelUp(ref player);
                 }
                 Thread.Sleep(1000);
             }
@@ -1100,6 +1107,8 @@ namespace TextRPG
                         break;
                     }
                     Console.WriteLine($"전투 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {treasure} G\n");
+                    player.exp += 1;
+                    if (player.exp >= player.expLimit) LevelUp(ref player);
                 }
                 Thread.Sleep(1000);
             }
@@ -1152,6 +1161,8 @@ namespace TextRPG
                         break;
                     }
                     Console.WriteLine($"전투 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {treasure} G\n");
+                    player.exp += 1;
+                    if (player.exp >= player.expLimit) LevelUp(ref player);
                 }
                 Thread.Sleep(1000);
             }
@@ -1162,6 +1173,19 @@ namespace TextRPG
             Console.WriteLine($"탐험 결과 : HP [{player.hp}/{player.maxHp}], 전리품 : {money} G");
             player.gold += money;
             Thread.Sleep(2000);
+        }
+
+        public static void LevelUp(ref Player player)
+        {
+            player.level += 1;
+            player.atk += 10;
+            player.def += 10;
+            player.maxHp += 25;
+            player.hp = player.maxHp;
+            player.exp = 0;
+            player.expLimit += 3;
+            Console.WriteLine("레벨 업!"); 
+            player.PrintStatus();
         }
 
     }
