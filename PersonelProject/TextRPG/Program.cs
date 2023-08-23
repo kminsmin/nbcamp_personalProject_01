@@ -1037,6 +1037,7 @@ namespace TextRPG
                         if (player.hp < 0) break;
                         Thread.Sleep(1000);
                     }
+                    treasure = new Random().Next(500, 1000);
                     money += treasure;
                     if (player.hp < 0)
                     {
@@ -1072,7 +1073,7 @@ namespace TextRPG
             for (int i = 0; i < 15; i++)
             {
                 eventIndex = new Random().Next(0, 10);
-                if (eventIndex < 8)
+                if (eventIndex < 7)
                 {
                     Console.WriteLine(" 아무도 없는 지하철을 걷습니다... 다음 칸으로 이동합니다...\n");
                 }
@@ -1088,6 +1089,7 @@ namespace TextRPG
                         if (player.hp < 0) break;
                         Thread.Sleep(1000);
                     }
+                    treasure = new Random().Next(1000, 1500);
                     money += treasure;
                     if (player.hp < 0)
                     {
@@ -1123,22 +1125,23 @@ namespace TextRPG
             for (int i = 0; i < 25; i++)
             {
                 eventIndex = new Random().Next(0, 10);
-                if (eventIndex < 8)
+                if (eventIndex < 6)
                 {
-                    Console.WriteLine(" 아무도 없는 지하철을 걷습니다... 다음 칸으로 이동합니다...\n");
+                    Console.WriteLine(" 아무것도 보이지 않는 어둠 속을 걷습니다...\n");
                 }
                 else
                 {
                     Console.WriteLine("적 등장! 전투를 실행합니다!");
-                    int damage = new Random().Next(100, 110) - player.def;
+                    int damage = new Random().Next(105, 120) - player.def;
                     if (damage < 0) damage = 1;
-                    for (int j = 0; j < new Random().Next(100 - player.atk, 110 - player.atk); j++)
+                    for (int j = 0; j < new Random().Next(115 - player.atk, 125 - player.atk); j++)
                     {
                         player.hp -= damage;
                         Console.WriteLine($"적에게 공격당했습니다! 현재 HP : [{player.hp}/{player.maxHp}]");
                         if (player.hp < 0) break;
                         Thread.Sleep(1000);
                     }
+                    treasure = new Random().Next(5000, 10000);
                     money += treasure;
                     if (player.hp < 0)
                     {
